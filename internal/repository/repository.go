@@ -15,11 +15,11 @@ const UniqueViolationErr = Error("unique_violation")
 const ModelNotFoundErr = Error("model_not_found")
 
 type UserRepository interface {
-	FindByEmail(email string) *model.User
-	Insert(email, hashedPassword string) *model.User
+	FindByEmail(email string) (*model.User, error)
+	Insert(email, hashedPassword string) (*model.User, error)
 }
 
 type TokenRepository interface {
-	Find(userId uint32) *model.Token
-	Insert(user *model.User, tokenVal string) *model.Token
+	Find(userId uint32) (*model.Token, error)
+	Insert(user *model.User, tokenVal string) (*model.Token, error)
 }
