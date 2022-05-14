@@ -14,6 +14,14 @@ type ErrorResponse struct {
 	Details map[string]string `json:"details,omitempty"`
 }
 
+func (e ErrorResponse) Is(err error) bool {
+	target, ok := err.(ErrorResponse)
+	if !ok {
+		return false
+	}
+	return e.Err == target.Err
+}
+
 func (e ErrorResponse) Error() string {
 	return e.Err
 }
