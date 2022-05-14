@@ -32,7 +32,7 @@ func (rep UserRepositoryImpl) FindByEmail(email string) (*model.User, error) {
 	err := rep.db.Get(&user, "SELECT id, email, hashed_password, created_at FROM \"user\" WHERE email = $1", email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, ModelNotFoundErr
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (rep TokenRepositoryImpl) Find(userId uint32) (*model.Token, error) {
 	err := rep.db.Get(&token, "SELECT token FROM token WHERE user_id = $1", userId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, ModelNotFoundErr
+			return nil, nil
 		}
 		return nil, err
 	}
