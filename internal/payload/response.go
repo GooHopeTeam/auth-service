@@ -4,7 +4,7 @@ type EmptyResponse struct {
 }
 
 type TokenResponse struct {
-	UserId string `json:"user_id"`
+	UserId uint32 `json:"user_id"`
 	Value  string `json:"token"`
 }
 
