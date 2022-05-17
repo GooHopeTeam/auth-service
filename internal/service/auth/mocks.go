@@ -57,24 +57,28 @@ func initMockRepositories() (UserRepositoryMock, TokenRepositoryMock) {
 }
 
 type VerifierMock struct {
-	verifier.Verifier[verificationData]
-	storage map[string]*verificationData
+	verifier.EmailVerifier
+	storage map[string]map[string]string
 }
 
-func (v VerifierMock) Send(email string, data *verificationData) error {
+func newVerifierMock() *VerifierMock {
+	return &VerifierMock{storage: make(map[string]map[string]string)}
+}
+
+func (v VerifierMock) Send(email string, data map[string]string) error {
 	v.storage[email] = data
 	return nil
 }
 
-func (v VerifierMock) Check(email, code string) (*verificationData, error) {
+func (v VerifierMock) Check(email, code string) (map[string]string, error) {
 	if code == verificationCode {
 		return v.storage[email], nil
 	}
+
 	return nil, nil
 }
 
 func getAuthService() AuthServiceImpl {
 	userRep, tokenRep := initMockRepositories()
-	v := VerifierMock{storage: make(map[string]*verificationData)}
-	return AuthServiceImpl{userRep: &userRep, tokenRep: &tokenRep, verifier: v, globalSalt: hashSalt}
+	return AuthServiceImpl{userRep: &userRep, tokenRep: &tokenRep, verifier: newVerifierMock(), globalSalt: hashSalt}
 }

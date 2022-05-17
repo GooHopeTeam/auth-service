@@ -28,7 +28,7 @@ func TestAuthServiceImpl_RegisterUser_Success(t *testing.T) {
 	data, err := authService.verifier.Check(regRequest.Email, verificationCode)
 	assert.NotNil(data)
 	assert.NoError(err)
-	assert.Equal(makeHash(regRequest.Password, hashSalt), (*data).hashedPassword)
+	assert.Equal(makeHash(regRequest.Password, hashSalt), data["hashedPassword"])
 }
 
 func TestAuthServiceImpl_VerifyEmail_Error_WrongCode(t *testing.T) {
@@ -38,7 +38,7 @@ func TestAuthServiceImpl_VerifyEmail_Error_WrongCode(t *testing.T) {
 		Code:  "111",
 	}
 	authService := getAuthService()
-	err := authService.verifier.Send(verRequest.Email, &verificationData{"qwerty"})
+	err := authService.verifier.Send(verRequest.Email, map[string]string{"hashedPassword": "qwerty"})
 	assert.NoError(err)
 	data, err := authService.VerifyEmail(verRequest)
 	assert.NotNil(err)
@@ -66,7 +66,7 @@ func TestAuthServiceImpl_VerifyEmail_Success(t *testing.T) {
 		Code:  verificationCode,
 	}
 	authService := getAuthService()
-	err := authService.verifier.Send(verRequest.Email, &verificationData{"qwerty"})
+	err := authService.verifier.Send(verRequest.Email, map[string]string{"hashedPassword": "qwerty"})
 	assert.NoError(err)
 	data, err := authService.VerifyEmail(verRequest)
 	assert.NotNil(data)
