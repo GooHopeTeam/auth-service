@@ -10,11 +10,11 @@ type AuthServiceImpl struct {
 	AuthService
 	userRep    repository.UserRepository
 	tokenRep   repository.TokenRepository
-	verifier   verifier.EmailVerifier
+	verifier   verifier.Verifier
 	globalSalt string
 }
 
-func New(userRep repository.UserRepository, tokenRep repository.TokenRepository, verifier verifier.EmailVerifier, globalSalt string) AuthService {
+func New(userRep repository.UserRepository, tokenRep repository.TokenRepository, verifier verifier.Verifier, globalSalt string) AuthService {
 	return AuthServiceImpl{userRep: userRep, tokenRep: tokenRep,
 		globalSalt: globalSalt, verifier: verifier}
 }

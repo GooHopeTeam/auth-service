@@ -57,7 +57,7 @@ func initMockRepositories() (UserRepositoryMock, TokenRepositoryMock) {
 }
 
 type VerifierMock struct {
-	verifier.EmailVerifier
+	verifier.Verifier
 	storage map[string]map[string]string
 }
 
@@ -76,9 +76,4 @@ func (v VerifierMock) Check(email, code string) (map[string]string, error) {
 	}
 
 	return nil, nil
-}
-
-func getAuthService() AuthServiceImpl {
-	userRep, tokenRep := initMockRepositories()
-	return AuthServiceImpl{userRep: &userRep, tokenRep: &tokenRep, verifier: newVerifierMock(), globalSalt: hashSalt}
 }

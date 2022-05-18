@@ -6,6 +6,11 @@ import (
 	"testing"
 )
 
+func getAuthService() AuthServiceImpl {
+	userRep, tokenRep := initMockRepositories()
+	return AuthServiceImpl{userRep: &userRep, tokenRep: &tokenRep, verifier: newVerifierMock(), globalSalt: hashSalt}
+}
+
 func TestAuthServiceImpl_RegisterUser_Error_EmailInUse(t *testing.T) {
 	assert := assert.New(t)
 	regRequest := &payload.RegistrationRequest{
