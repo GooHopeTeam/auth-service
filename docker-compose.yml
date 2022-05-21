@@ -1,0 +1,44 @@
+version: "3.5"
+services:
+  auth-service:
+    build: .
+    env_file: .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:12.7
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: "/var/lib/postgresql/data"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    hostname: postgres_host
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} -h ${DB_HOST} -p ${DB_PORT}"]
+      start_period: 10s
+
+  redis:
+    image: "redis:5.0.7-alpine"
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    hostname: redis_host
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 10s
+
+volumes:
+  db-data:
+    driver: local
