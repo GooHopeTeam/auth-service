@@ -22,6 +22,7 @@ type Config struct {
 			Port string `env:"SMTP_PORT" envDefault:"587"`
 		}
 	}
-	HTTPHost   string `env:"HTTP_HOST" envDefault:"localhost:8080"`
-	GlobalSalt string `env:"GLOBAL_SALT,required"`
+	HTTPHost      string `env:"HTTP_HOST" envDefault:"localhost:8080"`
+	GlobalSalt    string `env:"GLOBAL_SALT,required"`
+	MigrationsDir string `env:"MIGRATIONS_DIR,required"`
 }

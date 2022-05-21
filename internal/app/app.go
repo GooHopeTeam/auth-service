@@ -2,7 +2,10 @@ package app
 
 import (
 	"context"
+	"errors"
 	"github.com/go-redis/redis"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +14,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -33,6 +38,32 @@ func Init() *App {
 	authService := loadAuthService(userRep, tokenRep, verifier, config.GlobalSalt)
 	router := loadRouter(authService)
 	return &App{config: config, router: router, db: db, redis: redis}
+}
+
+func (app *App) RunMigrations() {
+	driver, err := postgres.WithInstance(app.db.DB, &postgres.Config{})
+	if err != nil {
+		panic(err)
+	}
+
+	migration, err := migrate.NewWithDatabaseInstance(
+		"file:///"+app.config.MigrationsDir,
+		"postgres", driver)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("Running migrations...")
+	err = migration.Up()
+	if err != nil {
+		if errors.Is(err, migrate.ErrNoChange) {
+			log.Println("Noting to migrate")
+		} else {
+			panic(err)
+		}
+		return
+	}
+	log.Println("Migration completed")
 }
 
 func (app *App) Close() {
