@@ -72,9 +72,12 @@ func loadAuthService(userRep repository.UserRepository, tokenRep repository.Toke
 	return auth.New(userRep, tokenRep, emailVerifier, globalSalt)
 }
 
-func loadRouter(authService auth.AuthService) *gin.Engine {
+func loadRouter(config *Config, authService auth.AuthService) *gin.Engine {
 	handler := handler.New(authService)
 	router := gin.Default()
+	if config.EnvType == "DEV" {
+		router.Use(CORS())
+	}
 	router.POST("/register", handler.HandleRegistration)
 	router.POST("/login", handler.HandleLogin)
 	router.POST("/verify_email", handler.HandleEmailVerification)

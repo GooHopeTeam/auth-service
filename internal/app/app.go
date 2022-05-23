@@ -36,7 +36,7 @@ func Init() *App {
 	verifier := loadVerifier(mailer, storage)
 	userRep, tokenRep := loadRepositories(db)
 	authService := loadAuthService(userRep, tokenRep, verifier, config.GlobalSalt)
-	router := loadRouter(authService)
+	router := loadRouter(config, authService)
 	return &App{config: config, router: router, db: db, redis: redis}
 }
 
