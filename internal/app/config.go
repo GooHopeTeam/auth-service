@@ -25,4 +25,5 @@ type Config struct {
 	HTTPHost      string `env:"HTTP_HOST" envDefault:"localhost:8080"`
 	GlobalSalt    string `env:"GLOBAL_SALT,required"`
 	MigrationsDir string `env:"MIGRATIONS_DIR,required"`
+	EnvType       string `env:"ENV_TYPE,required" envDefault:"DEV"`
 }
