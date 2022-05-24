@@ -36,6 +36,8 @@ func extractPayload[Payload any](ctx *gin.Context) (*Payload, error) {
 				fieldName := field.Tag.Get("json")
 				payloadErr.Details[fieldName] = details[vError.Tag()]
 			}
+		} else if err.Error() == "EOF" {
+			return nil, payload.ErrorResponse{Err: "empty_body"}
 		} else {
 			return nil, err
 		}
