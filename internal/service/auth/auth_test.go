@@ -77,6 +77,7 @@ func TestAuthServiceImpl_VerifyEmail_Success(t *testing.T) {
 	assert.NotNil(data)
 	assert.NoError(err)
 	user, err := authService.userRep.FindByEmail("user3@gmail.com")
+	assert.NoError(err)
 	assert.NotNil(user)
 	assert.Equal(uint32(3), user.Id)
 }
