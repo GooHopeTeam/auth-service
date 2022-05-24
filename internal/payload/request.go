@@ -11,7 +11,7 @@ type LoginRequest struct {
 }
 
 type TokenVerificationRequest struct {
-	UserId uint32 `json:"user_id" binding:"required"`
+	UserID uint32 `json:"user_id" binding:"required"`
 	Token  string `json:"token" binding:"required"`
 }
 

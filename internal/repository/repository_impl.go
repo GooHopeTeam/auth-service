@@ -64,7 +64,7 @@ func (rep TokenRepositoryImpl) Find(userId uint32) (*model.Token, error) {
 func (rep TokenRepositoryImpl) Insert(user *model.User, tokenVal string) (*model.Token, error) {
 	var token model.Token
 	err := rep.db.Get(&token, "INSERT INTO \"token\"(user_id, token) VALUES($1, $2) RETURNING *;",
-		user.Id, tokenVal)
+		user.ID, tokenVal)
 	if err != nil {
 		return nil, err
 	}

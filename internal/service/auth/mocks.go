@@ -22,7 +22,7 @@ func (rep *UserRepositoryMock) FindByEmail(email string) (*model.User, error) {
 }
 
 func (rep *UserRepositoryMock) Insert(email, hashedPassword string) (*model.User, error) {
-	user := model.User{Id: uint32(len(rep.db)) + 1, Email: email, HashedPassword: hashedPassword, CreatedAt: time.Now()}
+	user := model.User{ID: uint32(len(rep.db)) + 1, Email: email, HashedPassword: hashedPassword, CreatedAt: time.Now()}
 	rep.db = append(rep.db, user)
 	return &user, nil
 }
@@ -34,24 +34,24 @@ type TokenRepositoryMock struct {
 
 func (rep *TokenRepositoryMock) Find(userId uint32) (*model.Token, error) {
 	return findInSlice[model.Token](rep.db, func(token *model.Token) bool {
-		return token.UserId == userId
+		return token.UserID == userId
 	}), nil
 }
 
 func (rep *TokenRepositoryMock) Insert(user *model.User, tokenVal string) (*model.Token, error) {
-	token := model.Token{UserId: user.Id, Value: tokenVal}
+	token := model.Token{UserID: user.ID, Value: tokenVal}
 	rep.db = append(rep.db, token)
 	return &token, nil
 }
 
 func initMockRepositories() (UserRepositoryMock, TokenRepositoryMock) {
 	userDb := []model.User{
-		{1, "user1@gmail.com", makeHash("123456", hashSalt), time.Now()},
-		{2, "user2@gmail.com", makeHash("qwerty", hashSalt), time.Now()},
+		{ID: 1, Email: "user1@gmail.com", HashedPassword: makeHash("123456", hashSalt), CreatedAt: time.Now()},
+		{ID: 2, Email: "user2@gmail.com", HashedPassword: makeHash("qwerty", hashSalt), CreatedAt: time.Now()},
 	}
 	tokenDb := []model.Token{
-		{1, func() string { token, _ := generateToken(&userDb[0]); return token }()},
-		{2, func() string { token, _ := generateToken(&userDb[1]); return token }()},
+		{UserID: 1, Value: func() string { token, _ := generateToken(&userDb[0]); return token }()},
+		{UserID: 2, Value: func() string { token, _ := generateToken(&userDb[1]); return token }()},
 	}
 	return UserRepositoryMock{db: userDb}, TokenRepositoryMock{db: tokenDb}
 }

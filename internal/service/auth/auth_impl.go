@@ -49,8 +49,8 @@ func (s AuthServiceImpl) LoginUser(pl *payload.LoginRequest) (*payload.TokenResp
 		return nil, WrongCredentialsErr
 	}
 
-	token, err := s.tokenRep.Find(user.Id)
-	return &payload.TokenResponse{UserId: user.Id, Value: token.Value}, err
+	token, err := s.tokenRep.Find(user.ID)
+	return &payload.TokenResponse{UserID: user.ID, Value: token.Value}, err
 }
 
 func (s AuthServiceImpl) VerifyEmail(pl *payload.EmailVerificationRequest) (*payload.TokenResponse, error) {
@@ -78,11 +78,11 @@ func (s AuthServiceImpl) VerifyEmail(pl *payload.EmailVerificationRequest) (*pay
 		return nil, err
 	}
 
-	return &payload.TokenResponse{UserId: user.Id, Value: token.Value}, nil
+	return &payload.TokenResponse{UserID: user.ID, Value: token.Value}, nil
 }
 
 func (s AuthServiceImpl) VerifyToken(pl *payload.TokenVerificationRequest) error {
-	token, err := s.tokenRep.Find(pl.UserId)
+	token, err := s.tokenRep.Find(pl.UserID)
 	if err != nil {
 		return err
 	}

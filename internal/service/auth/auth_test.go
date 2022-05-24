@@ -79,7 +79,7 @@ func TestAuthServiceImpl_VerifyEmail_Success(t *testing.T) {
 	user, err := authService.userRep.FindByEmail("user3@gmail.com")
 	assert.NoError(err)
 	assert.NotNil(user)
-	assert.Equal(uint32(3), user.Id)
+	assert.Equal(uint32(3), user.ID)
 }
 
 func TestAuthServiceImpl_LoginUser_Error_WrongCredentials_WrongEmail(t *testing.T) {
@@ -118,7 +118,7 @@ func TestAuthServiceImpl_LoginUser_Success(t *testing.T) {
 func TestAuthServiceImpl_VerifyToken_WrongUser(t *testing.T) {
 	assert := assert.New(t)
 	verRequest := &payload.TokenVerificationRequest{
-		UserId: 3,
+		UserID: 3,
 		Token:  "123",
 	}
 	authService := getAuthService()
@@ -129,7 +129,7 @@ func TestAuthServiceImpl_VerifyToken_WrongUser(t *testing.T) {
 func TestAuthServiceImpl_VerifyToken_WrongToken(t *testing.T) {
 	assert := assert.New(t)
 	verRequest := &payload.TokenVerificationRequest{
-		UserId: 1,
+		UserID: 1,
 		Token:  "123",
 	}
 	authService := getAuthService()
@@ -141,7 +141,7 @@ func TestAuthServiceImpl_VerifyToken_Success(t *testing.T) {
 	assert := assert.New(t)
 	authService := getAuthService()
 	verRequest := &payload.TokenVerificationRequest{
-		UserId: 1,
+		UserID: 1,
 		Token:  func() string { token, _ := authService.tokenRep.Find(1); return token.Value }(),
 	}
 	err := authService.VerifyToken(verRequest)
