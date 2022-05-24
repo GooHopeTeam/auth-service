@@ -1,0 +1,1 @@
+[![Actions Status](https://github.com/goohopeteam/auth-service/workflows/CI/badge.svg)](https://github.com/goohopeteam/auth-service/actions)
