@@ -27,21 +27,31 @@ func (rep *UserRepositoryMock) Insert(email, hashedPassword string) (*model.User
 	return &user, nil
 }
 
+func (rep *UserRepositoryMock) UpdatePassword(userID uint32, hashedPassword string) (*model.User, error) {
+	rep.db[userID-1].HashedPassword = hashedPassword
+	return &rep.db[userID-1], nil
+}
+
 type TokenRepositoryMock struct {
 	repository.TokenRepository
 	db []model.Token
 }
 
-func (rep *TokenRepositoryMock) Find(userId uint32) (*model.Token, error) {
+func (rep *TokenRepositoryMock) Find(userID uint32) (*model.Token, error) {
 	return findInSlice[model.Token](rep.db, func(token *model.Token) bool {
-		return token.UserID == userId
+		return token.UserID == userID
 	}), nil
 }
 
-func (rep *TokenRepositoryMock) Insert(user *model.User, tokenVal string) (*model.Token, error) {
-	token := model.Token{UserID: user.ID, Value: tokenVal}
+func (rep *TokenRepositoryMock) Insert(userID uint32, tokenVal string) (*model.Token, error) {
+	token := model.Token{UserID: userID, Value: tokenVal}
 	rep.db = append(rep.db, token)
 	return &token, nil
+}
+
+func (rep *TokenRepositoryMock) UpdateToken(userID uint32, tokenVal string) (*model.Token, error) {
+	rep.db[userID-1].Value = tokenVal
+	return &rep.db[userID-1], nil
 }
 
 func initMockRepositories() (UserRepositoryMock, TokenRepositoryMock) {

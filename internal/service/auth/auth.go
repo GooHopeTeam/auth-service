@@ -9,6 +9,7 @@ type AuthService interface {
 	LoginUser(pl *payload.LoginRequest) (*payload.TokenResponse, error)
 	VerifyEmail(pl *payload.EmailVerificationRequest) (*payload.TokenResponse, error)
 	VerifyToken(pl *payload.TokenVerificationRequest) error
+	ChangePassword(pl *payload.ChangePasswordRequest) (*payload.TokenResponse, error)
 }
 
 var (

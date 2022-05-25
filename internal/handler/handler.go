@@ -71,3 +71,17 @@ func (handler Handler) HandleEmailVerification(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, token)
 }
+
+func (handler Handler) HandlePasswordChange(ctx *gin.Context) {
+	pl, err := extractPayload[payload.ChangePasswordRequest](ctx)
+	if err != nil {
+		respondWithError(ctx, err, http.StatusBadRequest)
+		return
+	}
+	token, err := handler.authService.ChangePassword(pl)
+	if err != nil {
+		respondWithError(ctx, err, http.StatusBadRequest)
+		return
+	}
+	ctx.JSON(http.StatusOK, token)
+}

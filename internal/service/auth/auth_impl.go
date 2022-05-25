@@ -73,7 +73,7 @@ func (s AuthServiceImpl) VerifyEmail(pl *payload.EmailVerificationRequest) (*pay
 		return nil, err
 	}
 
-	token, err := s.tokenRep.Insert(user, tokenVal)
+	token, err := s.tokenRep.Insert(user.ID, tokenVal)
 	if err != nil {
 		return nil, err
 	}
@@ -92,4 +92,39 @@ func (s AuthServiceImpl) VerifyToken(pl *payload.TokenVerificationRequest) error
 	}
 
 	return nil
+}
+
+func (s AuthServiceImpl) ChangePassword(pl *payload.ChangePasswordRequest) (*payload.TokenResponse, error) {
+	user, err := s.userRep.FindByEmail(pl.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, WrongCredentialsErr
+	}
+
+	oldHashedPassword := makeHash(pl.OldPassword, s.globalSalt)
+	if user.HashedPassword != oldHashedPassword {
+		return nil, WrongCredentialsErr
+	}
+
+	newHashedPassword := makeHash(pl.NewPassword, s.globalSalt)
+
+	user, err = s.userRep.UpdatePassword(user.ID, newHashedPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenVal, err := generateToken(user)
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := s.tokenRep.UpdateToken(user.ID, tokenVal)
+	if err != nil {
+		return nil, err
+	}
+
+	return &payload.TokenResponse{UserID: user.ID, Value: token.Value}, nil
 }

@@ -147,3 +147,47 @@ func TestAuthServiceImpl_VerifyToken_Success(t *testing.T) {
 	err := authService.VerifyToken(verRequest)
 	assert.NoError(err)
 }
+
+func TestAuthServiceImpl_ChangePassword_WrongEmail(t *testing.T) {
+	assert := assert.New(t)
+	authService := getAuthService()
+	changeRequest := &payload.ChangePasswordRequest{
+		Email:       "user3@gmail.com",
+		OldPassword: "123456",
+		NewPassword: "qwerty",
+	}
+	token, err := authService.ChangePassword(changeRequest)
+	assert.ErrorIs(err, WrongCredentialsErr)
+	assert.Nil(token)
+}
+
+func TestAuthServiceImpl_ChangePassword_WrongOldPassword(t *testing.T) {
+	assert := assert.New(t)
+	authService := getAuthService()
+	changeRequest := &payload.ChangePasswordRequest{
+		Email:       "user1@gmail.com",
+		OldPassword: "111111",
+		NewPassword: "qwerty",
+	}
+	token, err := authService.ChangePassword(changeRequest)
+	assert.ErrorIs(err, WrongCredentialsErr)
+	assert.Nil(token)
+}
+
+func TestAuthServiceImpl_ChangePassword_Success(t *testing.T) {
+	assert := assert.New(t)
+	authService := getAuthService()
+	changeRequest := &payload.ChangePasswordRequest{
+		Email:       "user1@gmail.com",
+		OldPassword: "123456",
+		NewPassword: "qwerty",
+	}
+	token, err := authService.ChangePassword(changeRequest)
+	assert.NoError(err)
+	assert.NotNil(token)
+	assert.Equal(uint32(1), token.UserID)
+	user, err := authService.userRep.FindByEmail("user1@gmail.com")
+	assert.NoError(err)
+	assert.NotNil(user)
+	assert.Equal(user.HashedPassword, makeHash(changeRequest.NewPassword, authService.globalSalt))
+}

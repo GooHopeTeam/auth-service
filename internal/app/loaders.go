@@ -82,5 +82,6 @@ func loadRouter(config *Config, authService auth.AuthService) *gin.Engine {
 	router.POST("/login", handler.HandleLogin)
 	router.POST("/verify_email", handler.HandleEmailVerification)
 	router.POST("/verify_token", handler.HandleTokenVerification)
+	router.POST("/change_password", handler.HandlePasswordChange)
 	return router
 }
