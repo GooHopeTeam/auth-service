@@ -4,6 +4,7 @@ import (
 	"github.com/goohopeteam/auth-service/internal/payload"
 	"github.com/goohopeteam/auth-service/internal/repository"
 	"github.com/goohopeteam/auth-service/internal/service/verifier"
+	"log"
 )
 
 type AuthServiceImpl struct {
@@ -30,8 +31,15 @@ func (s AuthServiceImpl) RegisterUser(pl *payload.RegistrationRequest) error {
 	}
 
 	hash := makeHash(pl.Password, s.globalSalt)
-	err = s.verifier.Send(pl.Email, map[string]string{"hashedPassword": hash})
-	return err
+
+	go func() {
+		err := s.verifier.Send(pl.Email, map[string]string{"hashedPassword": hash})
+		if err != nil {
+			log.Println(err)
+		}
+	}()
+
+	return nil
 }
 
 func (s AuthServiceImpl) LoginUser(pl *payload.LoginRequest) (*payload.TokenResponse, error) {

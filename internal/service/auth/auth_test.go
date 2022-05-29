@@ -4,6 +4,7 @@ import (
 	"github.com/goohopeteam/auth-service/internal/payload"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func getAuthService() AuthServiceImpl {
@@ -29,6 +30,7 @@ func TestAuthServiceImpl_RegisterUser_Success(t *testing.T) {
 	}
 	authService := getAuthService()
 	err := authService.RegisterUser(regRequest)
+	time.Sleep(100 * time.Millisecond)
 	assert.NoError(err)
 	data, err := authService.verifier.Check(regRequest.Email, verificationCode)
 	assert.NotNil(data)
