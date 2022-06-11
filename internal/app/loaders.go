@@ -78,10 +78,11 @@ func loadRouter(config *Config, authService auth.AuthService) *gin.Engine {
 	if config.EnvType == "DEV" {
 		router.Use(CORS())
 	}
-	router.POST("/register", handler.HandleRegistration)
-	router.POST("/login", handler.HandleLogin)
-	router.POST("/verify_email", handler.HandleEmailVerification)
-	router.POST("/verify_token", handler.HandleTokenVerification)
-	router.POST("/change_password", handler.HandlePasswordChange)
+	v1 := router.Group("/v1")
+	v1.POST("/register", handler.HandleRegistration)
+	v1.POST("/login", handler.HandleLogin)
+	v1.POST("/verify_email", handler.HandleEmailVerification)
+	v1.POST("/verify_token", handler.HandleTokenVerification)
+	v1.POST("/change_password", handler.HandlePasswordChange)
 	return router
 }
